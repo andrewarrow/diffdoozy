@@ -1,0 +1,44 @@
+#!/bin/bash
+
+# git-aicommit - Automatically generate commit messages using AI
+
+# Parse arguments
+FILES=()
+ADD_ALL=false
+
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        -a|--all)
+            ADD_ALL=true
+            shift
+            ;;
+        *)
+            FILES+=("$1")
+            shift
+            ;;
+    esac
+done
+
+# Stage files
+if [ "$ADD_ALL" = true ]; then
+    git add -A
+elif [ ${#FILES[@]} -gt 0 ]; then
+    git add "${FILES[@]}"
+fi
+
+# Check if there are staged changes
+if ! git diff --cached --quiet; then
+    # Generate commit message using the Python script
+    COMMIT_MSG=$(python3 "$(dirname "$0")/main.py")
+    
+    if [ $? -eq 0 ] && [ -n "$COMMIT_MSG" ]; then
+        echo "Generated commit message: $COMMIT_MSG"
+        git commit -m "$COMMIT_MSG"
+    else
+        echo "Failed to generate commit message" >&2
+        exit 1
+    fi
+else
+    echo "No staged changes to commit" >&2
+    exit 1
+fi
