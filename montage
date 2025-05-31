@@ -1,0 +1,10 @@
+# Step 1: Get the dimensions of the largest t image
+magick t[1-5].png -format "%w x %h\n" info: | sort -nr | head -1 | while read w h; do
+  size="${w}x${h}"
+  # Step 2: Process b images to match t image size with black background
+  for i in b[1-5].png; do
+    magick "$i" -resize "${size}^>" -gravity center -background black -extent "$size" "resized_$i"
+  done
+  # Step 3: Montage all images into 5x2 grid
+  magick montage t[1-5].png resized_b[1-5].png -tile 5x2 -geometry +0+0 output.png
+done
