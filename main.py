@@ -27,15 +27,12 @@ def run_ollama(text):
         if not response_text:
             return ""
         
-        # Look for </think> marker and extract final output
         think_end_index = response_text.rfind("</think>")
         if think_end_index == -1:
-            # No </think> marker found, display entire output
-            print(output_str, end='')
-            return output_str
+            print(response_text, end='')
+            return response_text
         else:
-            # Extract content after </think>
-            final_output = output_str[think_end_index + 8:].strip()  # 8 is length of "</think>"
+            final_output = response_text[think_end_index + 8:].strip() 
             if final_output:
                 return final_output
         
