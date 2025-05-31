@@ -78,7 +78,7 @@ def main():
     first_300_words = get_first_300_words(diff_output)
     
     # Create prompt for ollama
-    prompt = f"Please summarize the following git diff in 80 chars max:\n\n{first_300_words}"
+    prompt = f"Please summarize the following git diff in 80 chars max but do not start your reply with A diff showing changes to etc. Just start with the actual summary. Here is the diff:\n\n{first_300_words}"
     
     # Send to ollama
     result = run_ollama(prompt)
