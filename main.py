@@ -3,7 +3,10 @@
 import json
 import re
 import requests
+import subprocess
 import sys
+
+# test
 
 def run_ollama(text):
     """Call Ollama API with the given text"""
@@ -44,13 +47,40 @@ def run_ollama(text):
         return ""
 
 
+def get_git_diff():
+    """Get git diff output"""
+    try:
+        result = subprocess.run(
+            ["git", "diff"], 
+            capture_output=True, 
+            text=True, 
+            check=True
+        )
+        return result.stdout
+    except subprocess.CalledProcessError:
+        return ""
+
+def get_first_300_words(text):
+    """Extract first 300 words from text"""
+    words = text.split()
+    return " ".join(words[:300])
+
 def main():
-    if len(sys.argv) < 2:
-        print("Usage: python main.py <text>", file=sys.stderr)
+    # Get git diff output
+    diff_output = get_git_diff()
+    
+    if not diff_output:
+        print("No git diff output found", file=sys.stderr)
         sys.exit(1)
     
-    text = sys.argv[1]
-    result = run_ollama(text)
+    # Get first 300 words
+    first_300_words = get_first_300_words(diff_output)
+    
+    # Create prompt for ollama
+    prompt = f"Please summarize the following git diff in 80 chars max:\n\n{first_300_words}"
+    
+    # Send to ollama
+    result = run_ollama(prompt)
     if result:
         print(result)
 
