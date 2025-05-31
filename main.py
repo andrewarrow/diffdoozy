@@ -7,6 +7,7 @@ import subprocess
 import sys
 
 # test
+# amore
 
 def run_ollama(text):
     """Call Ollama API with the given text"""
@@ -51,7 +52,7 @@ def get_git_diff():
     """Get git diff output"""
     try:
         result = subprocess.run(
-            ["git", "diff"], 
+            ["git", "diff", "--cached"], 
             capture_output=True, 
             text=True, 
             check=True
