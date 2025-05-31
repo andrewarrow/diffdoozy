@@ -83,7 +83,9 @@ def main():
     # Send to ollama
     result = run_ollama(prompt)
     if result:
-        print(result)
+        # Enforce 80 character limit by truncating if needed
+        truncated_result = result[:80]
+        print(truncated_result)
 
 
 if __name__ == "__main__":
